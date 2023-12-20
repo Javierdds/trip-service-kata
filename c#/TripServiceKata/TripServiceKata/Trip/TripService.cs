@@ -17,17 +17,9 @@ namespace TripServiceKata.Trip
         private List<Trip> GetTripsByUser(User.User user, User.User loggedUser, List<Trip> userTrips)
         {
             List<Trip> tripList = new List<Trip>();
-            bool isFriend = false;
             if (loggedUser != null)
             {
-                foreach (User.User friend in user.GetFriends())
-                {
-                    if (friend.Equals(loggedUser))
-                    {
-                        isFriend = true;
-                        break;
-                    }
-                }
+                var isFriend = IsFriend(loggedUser, user);
 
                 if (isFriend)
                 {
@@ -40,6 +32,21 @@ namespace TripServiceKata.Trip
             {
                 throw new UserNotLoggedInException();
             }
+        }
+
+        protected virtual bool IsFriend(User.User loggedUser, User.User user)
+        {
+            bool isFriend = false;
+            foreach (User.User friend in user.GetFriends())
+            {
+                if (friend.Equals(loggedUser))
+                {
+                    isFriend = true;
+                    break;
+                }
+            }
+
+            return isFriend;
         }
 
         protected virtual User.User GetLoggedUser()

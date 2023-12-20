@@ -69,19 +69,38 @@ namespace TripServiceKata.Tests
         [Test]
         public void GivenLoggedUserWithFriends_SearchFriendlyUserTrips_GetsUserTripsAsResult()
         {
+            var tripService = new TripServiceForLoggedUserWithFriends();
+            var user = tripService.FriendlyUser;
+            user?.AddTrip(new Trip.Trip());
+            user?.AddTrip(new Trip.Trip());
+            user?.AddTrip(new Trip.Trip());
+            var expectedValue = user?.Trips();
+
+            var tripsByUser = tripService.GetTripsByUser(user);
             
+            Assert.AreEqual(tripsByUser, expectedValue);
         }
         
         private class TripServiceForLoggedUserWithFriends : TripService
         {
-            private readonly User.User _friendlyUser = new User.User();
+            public readonly User.User FriendlyUser = new User.User();
             
             protected override User.User GetLoggedUser()
             {
                 User.User userWithFriends = new User.User();
-                userWithFriends.AddFriend(_friendlyUser);
+                userWithFriends.AddFriend(FriendlyUser);
                 
                 return userWithFriends;
+            }
+            
+            protected override List<Trip.Trip> FindTripsByUser(User.User user)
+            {
+                return FriendlyUser.Trips();
+            }
+            
+            protected override bool IsFriend(User.User loggedUser, User.User user)
+            {
+                return user.Equals(FriendlyUser);
             }
         }
         
@@ -91,6 +110,11 @@ namespace TripServiceKata.Tests
             {
                 return new User.User();
             }
+            
+            protected override List<Trip.Trip> FindTripsByUser(User.User user)
+            {
+                return new List<Trip.Trip>();
+            }
         }
         
         private class TripServiceForGuestUser : TripService
@@ -98,6 +122,11 @@ namespace TripServiceKata.Tests
             protected override User.User GetLoggedUser()
             {
                 return null;
+            }
+            
+            protected override List<Trip.Trip> FindTripsByUser(User.User user)
+            {
+                return new List<Trip.Trip>();
             }
         }
         
