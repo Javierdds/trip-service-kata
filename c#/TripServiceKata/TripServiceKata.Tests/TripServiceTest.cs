@@ -22,15 +22,6 @@ namespace TripServiceKata.Tests
         {
             _tripService = null;
         }
-
-        [Test]
-        public void GivenNullFriendUser_ByDefinition_AnExceptionIsThrown()
-        {
-            _tripService = new TripServiceForLoggedUser();
-            
-            Assert.Throws<System.NullReferenceException>(
-                () => _tripService.GetTripsByUser(null));
-        }
         
         [Test]
         public void GivenGuestUser_ByDefinition_AnExceptionIsThrown()
@@ -43,7 +34,7 @@ namespace TripServiceKata.Tests
         }
 
         [Test]
-        public void GivenLoggedUser_WithNoFriends_GetsEmptyTripsAsResult()
+        public void GivenLoggedUserWithNoFriends_SearchUserTrips_GetsEmptyTripsAsResult()
         {
             var user = new User.User();
             var expectedValue = new List<Trip.Trip>();
@@ -54,6 +45,46 @@ namespace TripServiceKata.Tests
             Assert.AreEqual(tripsByUser, expectedValue);
         }
 
+        [Test]
+        public void GivenLoggedUser_GetNullUserTrips_AnExceptionIsThrown()
+        {
+            _tripService = new TripServiceForLoggedUser();
+            
+            Assert.Throws<System.NullReferenceException>(
+                () => _tripService.GetTripsByUser(null));
+        }
+        
+        [Test]
+        public void GivenLoggedUserWithFriends_SearchUnfriendlyUserTrips_GetsEmptyTripsAsResult()
+        {
+            var user = new User.User();
+            var expectedValue = new List<Trip.Trip>();
+            _tripService = new TripServiceForLoggedUserWithFriends();
+
+            var tripsByUser = _tripService.GetTripsByUser(user);
+            
+            Assert.AreEqual(tripsByUser, expectedValue);
+        }
+        
+        [Test]
+        public void GivenLoggedUserWithFriends_SearchFriendlyUserTrips_GetsUserTripsAsResult()
+        {
+            
+        }
+        
+        private class TripServiceForLoggedUserWithFriends : TripService
+        {
+            private readonly User.User _friendlyUser = new User.User();
+            
+            protected override User.User GetLoggedUser()
+            {
+                User.User userWithFriends = new User.User();
+                userWithFriends.AddFriend(_friendlyUser);
+                
+                return userWithFriends;
+            }
+        }
+        
         private class TripServiceForLoggedUser : TripService
         {
             protected override User.User GetLoggedUser()
