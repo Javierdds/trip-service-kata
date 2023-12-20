@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using TripServiceKata.Exception;
 using TripServiceKata.Trip;
-using TripServiceKata.User;
 
 namespace TripServiceKata.Tests
 {
@@ -87,7 +85,7 @@ namespace TripServiceKata.Tests
             
             protected override User.User GetLoggedUser()
             {
-                User.User userWithFriends = new User.User();
+                var userWithFriends = new User.User();
                 userWithFriends.AddFriend(FriendlyUser);
                 
                 return userWithFriends;
@@ -129,19 +127,5 @@ namespace TripServiceKata.Tests
                 return new List<Trip.Trip>();
             }
         }
-        
-        // private void AssertAmount(int expected, string failMessage)
-        // {
-        //     if (health.Amount != expected)
-        //     {
-        //         var message = new StringBuilder();
-        //
-        //         message.AppendLine(failMessage);
-        //         message.AppendLine($"  Expected: {expected}");
-        //         message.AppendLine($"  But was: {whatever}");
-        //
-        //         Assert.Fail(message.ToString());
-        //     }
-        // }
     }
 }
