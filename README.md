@@ -1,3 +1,7 @@
+## Javier de Dueñas solution for the Trip Service Kata
+Kata extracted from [here](https://github.com/sandromancuso/trip-service-kata).
+The following is as the original repository declares:
+
 Trip Service Kata
 =================
 
